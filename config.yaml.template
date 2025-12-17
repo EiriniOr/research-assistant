@@ -1,0 +1,40 @@
+# Research Assistant Configuration Template
+# Copy this file to config.yaml and fill in your API keys
+
+# Anthropic Claude API Configuration
+anthropic:
+  api_key: ${ANTHROPIC_API_KEY}  # Or set directly: "sk-ant-..."
+  model: "claude-sonnet-4-5-20250929"
+  max_tokens: 4000
+  temperature: 0.3  # Lower = more focused/deterministic
+
+# Search Engine Settings
+search:
+  engine: "duckduckgo"  # Currently only DuckDuckGo supported
+  max_results_per_query: 5
+  timeout_seconds: 10
+  user_agent: "ResearchAssistant/1.0"
+
+# Content Fetching Settings
+fetching:
+  max_content_length: 5000  # Maximum words per source
+  timeout_seconds: 10
+  retry_attempts: 2
+
+# Agent Behavior Parameters
+agent:
+  max_subqueries: 5  # Maximum sub-queries to generate
+  min_subqueries: 3  # Minimum sub-queries to generate
+  facts_per_source: 5  # Target facts to extract per source
+
+# Output Settings
+output:
+  report_dir: "data/reports"
+  include_timestamps: true
+  save_intermediate: false  # Save intermediate results for debugging
+
+# Logging Configuration
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  file: "logs/research.log"
+  console: true

@@ -39,7 +39,10 @@ def _get_default_config() -> Dict[str, Any]:
         },
         'search': {
             'engine': 'duckduckgo',
-            'max_results_per_query': 5
+            'provider': 'auto',  # auto | duckduckgo | google
+            'max_results_per_query': 5,
+            'google_api_key': '${GOOGLE_API_KEY}',
+            'google_cse_id': '${GOOGLE_CSE_ID}'
         },
         'fetching': {
             'max_content_length': 5000,

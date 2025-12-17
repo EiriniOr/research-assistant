@@ -1,4 +1,4 @@
-"""Web search engine implementation using DuckDuckGo."""
+"""Web search engine factory with multiple provider support."""
 
 import time
 from typing import Dict, List
@@ -11,7 +11,7 @@ from src.utils.logging_setup import get_logger
 logger = get_logger(__name__)
 
 
-class SearchEngine:
+class DuckDuckGoSearchEngine:
     """
     Web search engine wrapper for DuckDuckGo.
     No API key required.
@@ -90,3 +90,103 @@ class SearchEngine:
                     return []  # Return empty list instead of crashing
 
         return []
+
+
+class SearchEngine:
+    """
+    Search engine factory that supports multiple providers.
+    Supports: DuckDuckGo (no API key), Google Custom Search (requires API key).
+    """
+
+    def __init__(self, config: Dict):
+        """
+        Initialize search engine with configured provider.
+
+        Args:
+            config: Configuration dictionary with search settings
+
+        The config['search']['provider'] determines behavior:
+        - "duckduckgo": Use DuckDuckGo only
+        - "google": Use Google Custom Search only
+        - "auto" (default): Try DuckDuckGo first, fallback to Google if available
+        """
+        self.config = config['search']
+        self.provider = self.config.get('provider', 'auto').lower()
+        self.max_results = self.config.get('max_results_per_query', 5)
+
+        # Initialize providers based on config
+        self.ddg_engine = None
+        self.google_engine = None
+
+        if self.provider in ['duckduckgo', 'auto']:
+            try:
+                self.ddg_engine = DuckDuckGoSearchEngine(config)
+                logger.info("DuckDuckGo search engine initialized")
+            except Exception as e:
+                logger.warning(f"Failed to initialize DuckDuckGo: {e}")
+
+        if self.provider in ['google', 'auto']:
+            try:
+                from src.search.google_search_engine import GoogleSearchEngine
+                self.google_engine = GoogleSearchEngine(config)
+                logger.info("Google search engine initialized")
+            except (ImportError, ValueError) as e:
+                if self.provider == 'google':
+                    # If explicitly requested Google, raise error
+                    raise
+                # For auto mode, just log and continue
+                logger.info(f"Google search not available: {e}")
+
+        if not self.ddg_engine and not self.google_engine:
+            raise ValueError(
+                "No search providers available. "
+                "Either configure Google API credentials or ensure DuckDuckGo is accessible."
+            )
+
+    def search(self, query: str, max_results: int = None) -> List[SearchResult]:
+        """
+        Search using configured provider(s).
+
+        Args:
+            query: Search query string
+            max_results: Maximum results to return
+
+        Returns:
+            List of SearchResult objects
+
+        Behavior based on provider:
+        - "duckduckgo": Use DuckDuckGo only
+        - "google": Use Google only
+        - "auto": Try DuckDuckGo first, fallback to Google if DuckDuckGo returns empty
+        """
+        if max_results is None:
+            max_results = self.max_results
+
+        results = []
+
+        # Try DuckDuckGo first (if available and not explicitly Google-only)
+        if self.ddg_engine and self.provider != 'google':
+            logger.info("Attempting search with DuckDuckGo...")
+            results = self.ddg_engine.search(query, max_results)
+
+            if results:
+                logger.info(f"✓ DuckDuckGo returned {len(results)} results")
+                return results
+            elif self.provider == 'duckduckgo':
+                # Explicitly DuckDuckGo only - don't try Google
+                logger.warning("DuckDuckGo returned no results (no fallback configured)")
+                return []
+
+            logger.warning("DuckDuckGo returned no results, trying Google fallback...")
+
+        # Try Google (if available)
+        if self.google_engine:
+            logger.info("Attempting search with Google Custom Search...")
+            results = self.google_engine.search(query, max_results)
+
+            if results:
+                logger.info(f"✓ Google returned {len(results)} results")
+            else:
+                logger.warning("Google also returned no results")
+
+        return results

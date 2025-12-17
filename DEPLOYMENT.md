@@ -100,11 +100,29 @@ Or similar URL (Streamlit will show the exact URL)
 
 **Known Issue**: DuckDuckGo may rate-limit or block Streamlit Cloud IPs
 
-**Workarounds**:
+**Solution**: Use Google Custom Search API fallback
+
+1. **Get Google API Credentials** (free tier: 100 queries/day):
+   - Go to: https://developers.google.com/custom-search/v1/overview
+   - Create API key in Google Cloud Console
+   - Create Custom Search Engine and get CSE ID
+
+2. **Add to Streamlit Secrets**:
+   ```toml
+   ANTHROPIC_API_KEY = "sk-ant-..."
+   GOOGLE_API_KEY = "AIza..."
+   GOOGLE_CSE_ID = "your-cse-id"
+   ```
+
+3. **Automatic Fallback**:
+   - App tries DuckDuckGo first (free, no API key)
+   - Falls back to Google if DuckDuckGo fails
+   - Provider is set to "auto" by default
+
+**Alternative Workarounds** (without Google API):
 1. Try more specific queries
 2. Wait a few minutes between searches
-3. Consider alternative: use a search API with auth (requires code changes)
-4. Deploy on your own server with different IP
+3. Deploy on your own server with different IP
 
 ## Monitoring
 

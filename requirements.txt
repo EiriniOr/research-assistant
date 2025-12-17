@@ -67,3 +67,4 @@ tzdata==2025.3 ; python_version >= "3.11" and python_version < "4.0"
 tzlocal==5.3.1 ; python_version >= "3.11" and python_version < "4.0"
 urllib3==2.6.2 ; python_version >= "3.11" and python_version < "4.0"
 watchdog==6.0.0 ; python_version >= "3.11" and python_version < "4.0" and platform_system != "Darwin"
+google-api-python-client>=2.0.0

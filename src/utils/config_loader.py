@@ -8,6 +8,13 @@ from typing import Any, Dict
 import yaml
 from dotenv import load_dotenv
 
+# Try to import streamlit for secrets support (optional)
+try:
+    import streamlit as st
+    HAS_STREAMLIT = True
+except ImportError:
+    HAS_STREAMLIT = False
+
 
 def load_config(config_path: str = None) -> Dict[str, Any]:
     """
@@ -51,6 +58,27 @@ def load_config(config_path: str = None) -> Dict[str, Any]:
     return config
 
 
+def _get_secret(key: str) -> str:
+    """
+    Get secret from Streamlit secrets or environment variable.
+
+    Args:
+        key: Secret key name
+
+    Returns:
+        Secret value or None
+    """
+    # Try Streamlit secrets first (for Streamlit Cloud deployment)
+    if HAS_STREAMLIT:
+        try:
+            return st.secrets.get(key)
+        except (KeyError, FileNotFoundError):
+            pass
+
+    # Fall back to environment variable
+    return os.getenv(key)
+
+
 def _substitute_env_vars(obj: Any) -> Any:
     """
     Recursively substitute ${VAR_NAME} patterns with environment variables.
@@ -71,7 +99,8 @@ def _substitute_env_vars(obj: Any) -> Any:
         matches = re.findall(pattern, obj)
 
         for var_name in matches:
-            env_value = os.getenv(var_name)
+            # Try Streamlit secrets first, then environment
+            env_value = _get_secret(var_name)
             if env_value is not None:
                 obj = obj.replace(f"${{{var_name}}}", env_value)
 
@@ -119,8 +148,8 @@ def get_api_key() -> str:
     Returns:
         Anthropic API key
     """
-    # Try environment first
-    api_key = os.getenv('ANTHROPIC_API_KEY')
+    # Try Streamlit secrets first
+    api_key = _get_secret('ANTHROPIC_API_KEY')
     if api_key:
         return api_key
 
@@ -130,5 +159,5 @@ def get_api_key() -> str:
         return config['anthropic']['api_key']
     except (FileNotFoundError, KeyError, ValueError):
         raise ValueError(
-            "ANTHROPIC_API_KEY not found in environment or config.yaml"
+            "ANTHROPIC_API_KEY not found in Streamlit secrets, environment, or config.yaml"
         )

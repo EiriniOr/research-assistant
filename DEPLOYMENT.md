@@ -92,14 +92,19 @@ Or similar URL (Streamlit will show the exact URL)
 
 ### If app crashes on load:
 
-1. Check secrets are set correctly
-2. Look for config.yaml errors:
-   - App expects secrets from environment, not config.yaml
-   - Config should read from `st.secrets` in Streamlit Cloud
+1. Check secrets are set correctly (ANTHROPIC_API_KEY in Streamlit secrets)
+2. Config automatically uses defaults on Streamlit Cloud (no config.yaml needed)
+3. Check logs for specific error messages
 
-### Update config_loader.py for Streamlit Cloud:
+### If search fails ("No sources found"):
 
-The current config loader reads from environment variables, which works with Streamlit secrets. But for better integration, we could update it to also check `st.secrets`.
+**Known Issue**: DuckDuckGo may rate-limit or block Streamlit Cloud IPs
+
+**Workarounds**:
+1. Try more specific queries
+2. Wait a few minutes between searches
+3. Consider alternative: use a search API with auth (requires code changes)
+4. Deploy on your own server with different IP
 
 ## Monitoring
 

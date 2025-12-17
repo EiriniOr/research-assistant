@@ -84,10 +84,15 @@ class ResearchOrchestrator:
         all_sources = self._search_and_fetch(sub_queries)
 
         if not all_sources:
-            raise ValueError(
-                "No sources found or all content fetches failed. "
-                "Check your internet connection or try a different question."
+            error_msg = (
+                "No sources found or all content fetches failed.\n\n"
+                "Possible causes:\n"
+                "• DuckDuckGo may be rate limiting requests\n"
+                "• Try a more specific question\n"
+                "• Check Streamlit Cloud logs for detailed errors"
             )
+            logger.error(error_msg)
+            raise ValueError(error_msg)
 
         logger.info(f"Successfully gathered {len(all_sources)} sources")
 
@@ -140,6 +145,8 @@ class ResearchOrchestrator:
             Continues with partial results if some searches/fetches fail.
         """
         all_sources = []
+        total_search_results = 0
+        failed_fetches = 0
 
         for query in queries:
             logger.info(f"Searching for: '{query}'")
@@ -150,6 +157,8 @@ class ResearchOrchestrator:
             if not search_results:
                 logger.warning(f"No search results for: '{query}'")
                 continue
+
+            total_search_results += len(search_results)
 
             # Fetch content from each result
             for result in search_results:
@@ -164,7 +173,15 @@ class ResearchOrchestrator:
                     )
                     all_sources.append(source)
                 else:
+                    failed_fetches += 1
                     logger.warning(f"Failed to fetch content from: {result.url}")
+
+        # Log summary for debugging
+        logger.info(
+            f"Search/fetch summary: {len(queries)} queries → "
+            f"{total_search_results} search results → "
+            f"{len(all_sources)} successful fetches ({failed_fetches} failed)"
+        )
 
         return all_sources
 

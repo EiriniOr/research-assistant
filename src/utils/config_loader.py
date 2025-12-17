@@ -16,9 +16,57 @@ except ImportError:
     HAS_STREAMLIT = False
 
 
+def _has_streamlit_secrets() -> bool:
+    """Check if Streamlit secrets are available."""
+    if not HAS_STREAMLIT:
+        return False
+    try:
+        # Try to access secrets - will fail if not on Streamlit Cloud
+        _ = st.secrets
+        return True
+    except (AttributeError, FileNotFoundError):
+        return False
+
+
+def _get_default_config() -> Dict[str, Any]:
+    """Get default configuration for Streamlit Cloud deployment."""
+    return {
+        'anthropic': {
+            'api_key': '${ANTHROPIC_API_KEY}',
+            'model': 'claude-sonnet-4-5-20250929',
+            'max_tokens': 4000,
+            'temperature': 0.3
+        },
+        'search': {
+            'engine': 'duckduckgo',
+            'max_results_per_query': 5
+        },
+        'fetching': {
+            'max_content_length': 5000,
+            'timeout_seconds': 10,
+            'retry_attempts': 2
+        },
+        'agent': {
+            'max_subqueries': 5,
+            'min_subqueries': 3,
+            'facts_per_source': 5
+        },
+        'output': {
+            'report_dir': 'data/reports',
+            'save_intermediate': False
+        },
+        'logging': {
+            'level': 'INFO',
+            'file': 'logs/research.log',
+            'console': True
+        }
+    }
+
+
 def load_config(config_path: str = None) -> Dict[str, Any]:
     """
     Load configuration from YAML file with environment variable substitution.
+    Falls back to default config if running on Streamlit Cloud without config.yaml.
 
     Args:
         config_path: Path to config file. Defaults to project root config.yaml
@@ -27,7 +75,7 @@ def load_config(config_path: str = None) -> Dict[str, Any]:
         Configuration dictionary
 
     Raises:
-        FileNotFoundError: If config file doesn't exist
+        FileNotFoundError: If config file doesn't exist (except on Streamlit Cloud)
         ValueError: If required API key is missing
     """
     # Load .env file if it exists
@@ -39,15 +87,21 @@ def load_config(config_path: str = None) -> Dict[str, Any]:
         config_path = project_root / "config.yaml"
 
     config_file = Path(config_path)
-    if not config_file.exists():
-        raise FileNotFoundError(
-            f"Config file not found: {config_path}\n"
-            f"Copy config.yaml.template to config.yaml and set your API key."
-        )
 
-    # Load YAML
-    with open(config_file) as f:
-        config = yaml.safe_load(f)
+    # If config file doesn't exist, use default config (for Streamlit Cloud)
+    if not config_file.exists():
+        # Check if we're on Streamlit Cloud (has secrets)
+        if HAS_STREAMLIT and _has_streamlit_secrets():
+            config = _get_default_config()
+        else:
+            raise FileNotFoundError(
+                f"Config file not found: {config_path}\n"
+                f"Copy config.yaml.template to config.yaml and set your API key."
+            )
+    else:
+        # Load YAML
+        with open(config_file) as f:
+            config = yaml.safe_load(f)
 
     # Substitute environment variables
     config = _substitute_env_vars(config)

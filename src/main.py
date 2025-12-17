@@ -191,28 +191,50 @@ def main():
         )
 
     # Main input area
+    if 'current_question' not in st.session_state:
+        st.session_state.current_question = ""
+
     question = st.text_input(
         "Research Question",
+        value=st.session_state.current_question,
         placeholder="e.g., What are the latest advances in multi-agent AI systems?",
         help="Ask any research question. The more specific, the better the results."
     )
 
-    # Example questions
-    with st.expander("💡 Example Questions"):
-        examples = [
-            "What are the benefits of microservices architecture?",
-            "How does CRISPR gene editing work?",
-            "What are the latest developments in quantum computing?",
-            "What is the current state of fusion energy research?",
-            "How do transformer models work in natural language processing?"
-        ]
-        for ex in examples:
-            if st.button(ex, key=ex):
-                question = ex
+    # Update session state when text changes
+    if question != st.session_state.current_question:
+        st.session_state.current_question = question
+
+    # Example questions as clickable chips
+    st.markdown("**💡 Quick Start:**")
+    examples = [
+        "What are the benefits of microservices architecture?",
+        "How does CRISPR gene editing work?",
+        "What are the latest developments in quantum computing?",
+        "What is the current state of fusion energy research?",
+        "How do transformer models work in natural language processing?"
+    ]
+
+    cols = st.columns(2)
+    for idx, ex in enumerate(examples):
+        with cols[idx % 2]:
+            if st.button(f"🔹 {ex}", key=f"example_{idx}", use_container_width=True):
+                st.session_state.current_question = ex
+                st.session_state.trigger_research = True
                 st.rerun()
 
-    # Research button
-    if st.button("🔬 Start Research", type="primary", disabled=not question):
+    st.divider()
+
+    # Research button or auto-trigger
+    start_research = False
+    if 'trigger_research' in st.session_state and st.session_state.trigger_research:
+        start_research = True
+        st.session_state.trigger_research = False
+        question = st.session_state.current_question
+    elif st.button("🔬 Start Research", type="primary", disabled=not question):
+        start_research = True
+
+    if start_research:
         if not question:
             st.error("Please enter a research question")
             return

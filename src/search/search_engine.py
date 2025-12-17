@@ -27,6 +27,10 @@ class SearchEngine:
         self.config = config['search']
         self.max_results = self.config.get('max_results_per_query', 5)
         self.timeout = self.config.get('timeout_seconds', 10)
+        self.user_agent = self.config.get(
+            'user_agent',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        )
 
     def search(self, query: str, max_results: int = None) -> List[SearchResult]:
         """
@@ -75,14 +79,14 @@ class SearchEngine:
             except Exception as e:
                 wait_time = 2 ** attempt  # Exponential backoff: 1s, 2s, 4s
                 logger.warning(
-                    f"Search attempt {attempt + 1}/{max_attempts} failed for '{query}': {e}"
+                    f"Search attempt {attempt + 1}/{max_attempts} failed for '{query}': {type(e).__name__}: {e}"
                 )
 
                 if attempt < max_attempts - 1:
                     logger.info(f"Retrying in {wait_time} seconds...")
                     time.sleep(wait_time)
                 else:
-                    logger.error(f"All search attempts failed for '{query}'")
+                    logger.error(f"All search attempts failed for '{query}': {type(e).__name__}: {e}")
                     return []  # Return empty list instead of crashing
 
         return []

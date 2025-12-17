@@ -17,11 +17,108 @@ from src.utils.logging_setup import setup_logging
 
 # Page configuration
 st.set_page_config(
-    page_title="Agentic Research Assistant",
-    page_icon="🔍",
+    page_title="Neural Research Assistant",
+    page_icon="🧠",
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# Custom CSS for futuristic design
+st.markdown("""
+<style>
+    /* Futuristic gradient background */
+    .stApp {
+        background: linear-gradient(135deg, #0a0e27 0%, #1a1a2e 50%, #16213e 100%);
+    }
+
+    /* Glowing headers */
+    h1 {
+        background: linear-gradient(90deg, #00d4ff, #7b2ff7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 800;
+        text-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+    }
+
+    /* Card-like containers with glow */
+    .stMarkdown, .stTextInput, .stButton {
+        backdrop-filter: blur(10px);
+    }
+
+    /* Neon accent lines */
+    hr {
+        border: none;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+        box-shadow: 0 0 10px #00d4ff;
+    }
+
+    /* Futuristic input fields */
+    .stTextInput input {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(0, 212, 255, 0.3);
+        border-radius: 8px;
+        color: #ffffff;
+        transition: all 0.3s;
+    }
+
+    .stTextInput input:focus {
+        border-color: #00d4ff;
+        box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+    }
+
+    /* Glowing buttons */
+    .stButton button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-weight: 600;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .stButton button:hover {
+        box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
+        transform: translateY(-2px);
+    }
+
+    /* Sidebar styling */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, rgba(10, 14, 39, 0.95), rgba(22, 33, 62, 0.95));
+        border-right: 1px solid rgba(0, 212, 255, 0.2);
+    }
+
+    /* Success/Info boxes */
+    .stSuccess, .stInfo, .stWarning {
+        border-radius: 8px;
+        border-left: 4px solid #00d4ff;
+        backdrop-filter: blur(10px);
+    }
+
+    /* Tab styling */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 8px;
+    }
+
+    .stTabs [data-baseweb="tab"] {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        padding: 8px 16px;
+        transition: all 0.3s;
+    }
+
+    .stTabs [aria-selected="true"] {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    /* Progress bar */
+    .stProgress > div > div {
+        background: linear-gradient(90deg, #00d4ff, #7b2ff7);
+    }
+</style>
+""", unsafe_allow_html=True)
 
 
 def initialize_app():
@@ -48,9 +145,10 @@ def main():
     """Main Streamlit application."""
 
     # Header
-    st.title("🔍 Agentic Research Assistant")
+    st.title("🧠 Neural Research Assistant")
     st.markdown(
-        "Ask a research question and I'll search, analyze, and synthesize findings from multiple sources."
+        "**AI-Powered Deep Research** • Ask any question and watch as Claude analyzes the web, "
+        "extracts key insights, and synthesizes comprehensive findings."
     )
 
     # Initialize
@@ -79,16 +177,16 @@ def main():
         st.header("ℹ️ About")
         st.markdown(
             """
-            This tool uses:
-            - **Claude** for reasoning & synthesis
-            - **DuckDuckGo** for web search
-            - **Trafilatura** for content extraction
+            **Powered by AI:**
+            - 🤖 **Claude Sonnet 4.5** - Reasoning & synthesis
+            - 🔍 **Google Custom Search** - Web discovery
+            - 📄 **Trafilatura** - Content extraction
 
-            The agent:
-            1. Breaks your question into sub-queries
-            2. Searches and fetches sources
-            3. Extracts key facts
-            4. Synthesizes findings
+            **Research Pipeline:**
+            1. 🧠 Decomposes question into sub-queries
+            2. 🌐 Searches and fetches web sources
+            3. 📊 Extracts key facts with confidence levels
+            4. 🔬 Synthesizes findings & identifies gaps
             """
         )
 
@@ -128,29 +226,29 @@ def main():
             orchestrator = ResearchOrchestrator(config)
 
             # Step 1: Decompose
-            status_text.text("🧠 Breaking down your question...")
+            status_text.text("🧠 Neural query decomposition...")
             progress_bar.progress(15)
 
             # Step 2: Search
-            status_text.text("🔍 Searching web sources...")
+            status_text.text("🌐 Scanning web via Google Custom Search...")
             progress_bar.progress(30)
 
             # We can't track individual steps since research() is one call
             # but we show progress to indicate activity
-            status_text.text("📥 Fetching content...")
+            status_text.text("📡 Fetching and parsing content...")
             progress_bar.progress(45)
 
-            status_text.text("📝 Extracting key facts...")
+            status_text.text("🔍 AI fact extraction in progress...")
             progress_bar.progress(65)
 
-            status_text.text("🔬 Synthesizing findings...")
+            status_text.text("⚡ Claude synthesizing insights...")
             progress_bar.progress(80)
 
             # Run research (this does all the work)
             report = orchestrator.research(question)
 
             progress_bar.progress(100)
-            status_text.text("✅ Research complete!")
+            status_text.text("✨ Analysis complete! Results ready.")
 
             # Store report in session state
             st.session_state.report = report

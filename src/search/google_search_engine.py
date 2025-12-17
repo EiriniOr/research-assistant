@@ -48,12 +48,22 @@ class GoogleSearchEngine:
         self.api_key = self.config.get('google_api_key')
         self.cse_id = self.config.get('google_cse_id')
 
+        # Check if credentials are still template placeholders
+        if self.api_key and self.api_key.startswith('${'):
+            logger.warning(f"Google API key not set (still placeholder: {self.api_key})")
+            self.api_key = None
+
+        if self.cse_id and self.cse_id.startswith('${'):
+            logger.warning(f"Google CSE ID not set (still placeholder: {self.cse_id})")
+            self.cse_id = None
+
         if not self.api_key or not self.cse_id:
             raise ValueError(
-                "Google API credentials missing. Set:\n"
-                "  - config['search']['google_api_key']\n"
-                "  - config['search']['google_cse_id']\n"
-                "Get credentials at: https://developers.google.com/custom-search/v1/overview"
+                "Google API credentials missing. Set in Streamlit secrets:\n"
+                "  GOOGLE_API_KEY = 'your-api-key'\n"
+                "  GOOGLE_CSE_ID = 'your-cse-id'\n"
+                f"Current state: api_key={'set' if self.api_key else 'missing'}, "
+                f"cse_id={'set' if self.cse_id else 'missing'}"
             )
 
         # Build service

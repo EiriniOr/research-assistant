@@ -143,6 +143,14 @@ class SearchEngine:
                 "Either configure Google API credentials or ensure DuckDuckGo is accessible."
             )
 
+        # Log available providers
+        providers = []
+        if self.ddg_engine:
+            providers.append("DuckDuckGo")
+        if self.google_engine:
+            providers.append("Google")
+        logger.info(f"Search providers available: {', '.join(providers)} (mode: {self.provider})")
+
     def search(self, query: str, max_results: int = None) -> List[SearchResult]:
         """
         Search using configured provider(s).

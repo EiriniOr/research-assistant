@@ -38,8 +38,8 @@ def _get_default_config() -> Dict[str, Any]:
             'temperature': 0.3
         },
         'search': {
-            'engine': 'duckduckgo',
-            'provider': 'auto',  # auto | duckduckgo | google
+            'engine': 'google',
+            'provider': 'google',  # Use Google only
             'max_results_per_query': 5,
             'google_api_key': '${GOOGLE_API_KEY}',
             'google_cse_id': '${GOOGLE_CSE_ID}'

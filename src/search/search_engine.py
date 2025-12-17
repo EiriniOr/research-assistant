@@ -133,6 +133,7 @@ class SearchEngine:
             except (ImportError, ValueError) as e:
                 if self.provider == 'google':
                     # If explicitly requested Google, raise error
+                    logger.error(f"Google search initialization failed: {e}")
                     raise
                 # For auto mode, just log and continue
                 logger.info(f"Google search not available: {e}")

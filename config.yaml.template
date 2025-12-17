@@ -10,14 +10,12 @@ anthropic:
 
 # Search Engine Settings
 search:
-  # Provider: "auto" (try DuckDuckGo, fallback to Google) | "duckduckgo" | "google"
-  provider: "auto"
-  engine: "duckduckgo"  # Legacy field, kept for compatibility
+  # Provider: Use Google Custom Search API
+  provider: "google"
+  engine: "google"
   max_results_per_query: 5
-  timeout_seconds: 10
-  user_agent: "ResearchAssistant/1.0"
 
-  # Google Custom Search API (optional, for fallback when DuckDuckGo fails)
+  # Google Custom Search API (required)
   # Free tier: 100 queries/day
   # Setup: https://developers.google.com/custom-search/v1/overview
   google_api_key: ${GOOGLE_API_KEY}  # Or set directly: "your-api-key"

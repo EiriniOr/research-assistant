@@ -217,7 +217,7 @@ logging:
 ## Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b eirini/feature-name`)
+2. Create a feature branch (`git checkout -b feature-name`)
 3. Commit your changes
 4. Push to your fork
 5. Open a Pull Request

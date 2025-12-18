@@ -40,19 +40,19 @@ def _get_default_config() -> Dict[str, Any]:
         'search': {
             'engine': 'google',
             'provider': 'google',  # Use Google only
-            'max_results_per_query': 5,
+            'max_results_per_query': 3,
             'google_api_key': '${GOOGLE_API_KEY}',
             'google_cse_id': '${GOOGLE_CSE_ID}'
         },
         'fetching': {
-            'max_content_length': 5000,
-            'timeout_seconds': 10,
-            'retry_attempts': 2
+            'max_content_length': 3000,
+            'timeout_seconds': 8,
+            'retry_attempts': 1
         },
         'agent': {
-            'max_subqueries': 5,
-            'min_subqueries': 3,
-            'facts_per_source': 5
+            'max_subqueries': 3,
+            'min_subqueries': 2,
+            'facts_per_source': 3
         },
         'output': {
             'report_dir': 'data/reports',

@@ -59,10 +59,10 @@ git push origin main
 ### 4. Your App Will Be Live At:
 
 ```
-https://eirinior-research-assistant.streamlit.app
+https://your-app-name.streamlit.app
 ```
 
-Or similar URL (Streamlit will show the exact URL)
+Streamlit will show the exact URL after deployment
 
 ## Configuration Files Added
 

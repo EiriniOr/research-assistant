@@ -26,8 +26,8 @@ git push origin main
 Click **"New app"** button and fill in:
 
 ```
-Repository: eirinior/research-assistant
-Branch: main (or eirini/initial-setup)
+Repository: [your-username]/research-assistant
+Branch: main
 Main file path: src/main.py
 ```
 

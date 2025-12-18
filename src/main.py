@@ -194,16 +194,24 @@ def main():
     if 'current_question' not in st.session_state:
         st.session_state.current_question = ""
 
-    question = st.text_input(
-        "Research Question",
-        value=st.session_state.current_question,
-        placeholder="e.g., What are the latest advances in multi-agent AI systems?",
-        help="Ask any research question. The more specific, the better the results."
-    )
+    # Create a form to handle Enter key
+    with st.form(key='research_form', clear_on_submit=False):
+        question = st.text_input(
+            "Research Question",
+            value=st.session_state.current_question,
+            placeholder="e.g., What are the latest advances in multi-agent AI systems?",
+            help="Ask any research question. The more specific, the better the results."
+        )
+        submit_button = st.form_submit_button("🔬 Start Research", type="primary")
 
     # Update session state when text changes
     if question != st.session_state.current_question:
         st.session_state.current_question = question
+
+    # Set trigger if form submitted
+    if submit_button and question:
+        st.session_state.trigger_research = True
+        st.rerun()
 
     # Example questions as clickable chips
     st.markdown("**💡 Quick Start:**")

@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- GitHub repository with code (✓ already done)
+- GitHub repository with the code
 - Streamlit Cloud account
 - Anthropic API key
 
@@ -13,10 +13,9 @@
 Make sure all files are committed:
 
 ```bash
-cd /Users/rena/research-assistant
 git add .
 git commit -m "Add Streamlit Cloud deployment config"
-git push origin eirini/initial-setup
+git push origin your-branch-name
 ```
 
 ### 2. Merge to Main (Recommended)
@@ -26,7 +25,7 @@ Streamlit Cloud typically deploys from `main` branch:
 ```bash
 # Create PR and merge via GitHub UI, or:
 git checkout main
-git merge eirini/initial-setup
+git merge your-branch-name
 git push origin main
 ```
 
@@ -38,8 +37,8 @@ git push origin main
 
 2. **Create New App**
    - Click "New app" button
-   - Select repository: `eirinior/research-assistant`
-   - Branch: `main` (or `eirini/initial-setup`)
+   - Select your repository: `your-username/research-assistant`
+   - Branch: `main`
    - Main file path: `src/main.py`
    - Click "Deploy"
 
@@ -145,14 +144,14 @@ git push origin main
 
 ## Making Repository Public (Optional)
 
-Currently your repo is private. To share the app publicly:
+If the repository is private and you want to share the app publicly:
 
-1. Go to GitHub repo settings
+1. Go to GitHub repository settings
 2. Scroll to "Danger Zone"
 3. Click "Change visibility" → "Make public"
 4. Confirm
 
-Note: Keep secrets in Streamlit Cloud dashboard, not in repo!
+Note: Keep secrets in Streamlit Cloud dashboard, not in the repository!
 
 ## Custom Domain (Paid Feature)
 

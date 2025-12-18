@@ -3,8 +3,6 @@
 ## Step 1: Merge to Main Branch
 
 ```bash
-cd /Users/rena/research-assistant
-
 # Create main branch if it doesn't exist
 git checkout -b main
 git push -u origin main
@@ -12,7 +10,7 @@ git push -u origin main
 # Or merge your current branch into main
 git checkout main
 git pull origin main
-git merge eirini/initial-setup
+git merge your-branch-name
 git push origin main
 ```
 

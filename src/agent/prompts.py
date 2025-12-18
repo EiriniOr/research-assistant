@@ -6,11 +6,10 @@ DECOMPOSE_PROMPT = """You are a research assistant helping decompose complex que
 
 Original question: {question}
 
-Your task is to break this into 3-5 specific, searchable sub-queries that:
-1. Cover different aspects of the main question
+Your task is to break this into 2-3 specific, searchable sub-queries that:
+1. Cover key aspects of the main question
 2. Can be answered by web search
-3. Together provide comprehensive understanding
-4. Are specific enough for good search results
+3. Are specific enough for good search results
 
 AGENT REASONING: Consider what information is needed to fully answer this question. Think about:
 - Core concepts that need definition
@@ -37,7 +36,7 @@ Source URL: {url}
 Source content:
 {content}
 
-Your task is to extract 3-5 key facts or claims that are relevant to answering the research question.
+Your task is to extract 2-3 key facts or claims that are relevant to answering the research question.
 
 For each fact:
 1. State it clearly and concisely
@@ -83,7 +82,7 @@ Your task is to analyze these facts and provide:
 
 3. KNOWLEDGE GAPS: What important aspects are missing or unclear? What questions remain unanswered?
 
-4. OVERALL ANSWER: Based on the evidence, provide a comprehensive answer to the original question. Weigh evidence quality - higher confidence facts should carry more weight. Acknowledge uncertainties.
+4. OVERALL ANSWER: Provide a concise answer (1-2 paragraphs max). Focus on key findings only. Weigh evidence quality - higher confidence facts should carry more weight.
 
 AGENT REASONING:
 - Look for patterns across sources
@@ -108,7 +107,7 @@ Return ONLY valid JSON in this format:
     "Missing information 1",
     "Unanswered question 2"
   ],
-  "answer": "Comprehensive answer to the original question based on the evidence. Should be 2-4 paragraphs that synthesizes the findings."
+  "answer": "Concise answer to the original question. 1-2 paragraphs maximum. Focus on key findings only."
 }}
 
 If there are no contradictions or gaps, use empty arrays: "contradictions": [], "gaps": []

@@ -1,5 +1,7 @@
 # 🔍 Agentic Research Assistant
 
+> 📁 Part of my portfolio: [see this project and more →](https://eirini-portfolio-aer3.vercel.app/?utm_source=github&utm_medium=readme&utm_campaign=research-assistant#story/research-assistant)
+
 An autonomous Python application that takes a research question and produces a structured report with citations by searching the web, extracting key facts, and synthesizing findings using Claude AI.
 
 ## Features
